@@ -13,5 +13,5 @@ type Address struct {
 	Country   string             `bson:"country,omitempty" json:"country"`
 	City      string             `bson:"city,omitempty" json:"city"`
 	Town      string             `bson:"town,omitempty" json:"town"`
-	Address   string             `bson:"address,omitempty" json:"sddress"`
+	Address   string             `bson:"address,omitempty" json:"address"`
 }
