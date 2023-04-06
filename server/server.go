@@ -138,7 +138,7 @@ func AddProduct(w http.ResponseWriter, r *http.Request) {
 		productResult, err := productCollection.InsertOne(ctx, bson.D{
 			{Key: "name", Value: product.Name},
 			{Key: "detail", Value: product.Detail},
-			{Key: "Price", Value: product.Price},
+			{Key: "price", Value: product.Price},
 			{Key: "category_id", Value: product.CategoryID},
 			{Key: "stock", Value: product.Stock},
 		})
@@ -277,4 +277,83 @@ func DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 	objId, _ := primitive.ObjectIDFromHex(id)
 	productCollection.DeleteOne(ctx, bson.M{"_id": objId})
+}
+
+func DeleteCategory(w http.ResponseWriter, r *http.Request) {
+
+	var ctx, _ = context.WithTimeout(context.Background(), 10*time.Second)
+	categoryCollection := project.Collection("category")
+
+	id := mux.Vars(r)["id"]
+	objId, _ := primitive.ObjectIDFromHex(id)
+	categoryCollection.DeleteOne(ctx, bson.M{"_id": objId})
+}
+
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
+
+	var ctx, _ = context.WithTimeout(context.Background(), 10*time.Second)
+	userCollection := project.Collection("user")
+
+	id := mux.Vars(r)["id"]
+	objId, _ := primitive.ObjectIDFromHex(id)
+	userCollection.DeleteOne(ctx, bson.M{"_id": objId})
+}
+
+func DeleteOrder(w http.ResponseWriter, r *http.Request) {
+
+	var ctx, _ = context.WithTimeout(context.Background(), 10*time.Second)
+	orderCollection := project.Collection("order")
+
+	id := mux.Vars(r)["id"]
+	objId, _ := primitive.ObjectIDFromHex(id)
+	orderCollection.DeleteOne(ctx, bson.M{"_id": objId})
+}
+
+func DeleteCart(w http.ResponseWriter, r *http.Request) {
+
+	var ctx, _ = context.WithTimeout(context.Background(), 10*time.Second)
+	cartCollection := project.Collection("cart")
+
+	id := mux.Vars(r)["id"]
+	objId, _ := primitive.ObjectIDFromHex(id)
+	cartCollection.DeleteOne(ctx, bson.M{"_id": objId})
+}
+
+func DeleteAddress(w http.ResponseWriter, r *http.Request) {
+
+	var ctx, _ = context.WithTimeout(context.Background(), 10*time.Second)
+	addressCollection := project.Collection("address")
+
+	id := mux.Vars(r)["id"]
+	objId, _ := primitive.ObjectIDFromHex(id)
+	addressCollection.DeleteOne(ctx, bson.M{"_id": objId})
+}
+
+func UpdeteProduct(w http.ResponseWriter, r *http.Request) {
+
+	var ctx, _ = context.WithTimeout(context.Background(), 10*time.Second)
+	productCollection := project.Collection("product")
+
+	if r.Method == "PUT" {
+		w.Header().Set("Content-Type", "application/json")
+		var product models.Product
+		_ = json.NewDecoder(r.Body).Decode(&product)
+
+		id := mux.Vars(r)["id"]
+		objId, _ := primitive.ObjectIDFromHex(id)
+		filter := bson.D{{"_id", objId}}
+		replacement := bson.D{
+			{Key: "name", Value: product.Name},
+			{Key: "detail", Value: product.Detail},
+			{Key: "price", Value: product.Price},
+			{Key: "category_id", Value: product.CategoryID},
+			{Key: "stock", Value: product.Stock},
+		}
+		result, err := productCollection.ReplaceOne(ctx, filter, replacement)
+		json.NewEncoder(w).Encode(result)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+	}
 }
