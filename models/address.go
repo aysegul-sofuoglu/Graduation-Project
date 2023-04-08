@@ -5,7 +5,7 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 type Address struct {
 	ID        primitive.ObjectID `bson:"_id,omitempty" json:"id"`
 	Title     string             `bson:"title,omitempty" json:"title"`
-	UserID    primitive.ObjectID `bson:"userID,omitempty" json:"user_id"`
+	User      primitive.ObjectID `bson:"user,omitempty" json:"user_id"`
 	FirstName string             `bson:"firstName,omitempty" json:"first_name"`
 	LastName  string             `bson:"lastName,omitempty" json:"last_name"`
 	Mail      string             `bson:"mail,omitempty" json:"mail"`

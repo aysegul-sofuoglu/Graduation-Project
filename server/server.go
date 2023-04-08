@@ -139,7 +139,7 @@ func AddProduct(w http.ResponseWriter, r *http.Request) {
 			{Key: "name", Value: product.Name},
 			{Key: "detail", Value: product.Detail},
 			{Key: "price", Value: product.Price},
-			{Key: "category_id", Value: product.CategoryID},
+			{Key: "category", Value: product.Category},
 			{Key: "stock", Value: product.Stock},
 		})
 
@@ -161,7 +161,7 @@ func AddCategory(w http.ResponseWriter, r *http.Request) {
 		_ = json.NewDecoder(r.Body).Decode(&category)
 
 		categoryResult, err := categoryCollection.InsertOne(ctx, bson.D{
-			{Key: "name", Value: category.Name},
+			{Key: "category", Value: category.Category},
 		})
 
 		json.NewEncoder(w).Encode(categoryResult)
@@ -186,7 +186,7 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 			{Key: "user_name", Value: user.UserName},
 			{Key: "user_password", Value: user.UserPassword},
 			{Key: "mail", Value: user.Mail},
-			{Key: "address_id", Value: user.AddressID},
+			{Key: "address", Value: user.Address},
 		})
 
 		json.NewEncoder(w).Encode(userResult)
@@ -206,9 +206,9 @@ func AddOrder(w http.ResponseWriter, r *http.Request) {
 		_ = json.NewDecoder(r.Body).Decode(&order)
 
 		orderResult, err := orderCollection.InsertOne(ctx, bson.D{
-			{Key: "user_id", Value: order.UserID},
+			{Key: "user", Value: order.User},
 			{Key: "total_price", Value: order.TotalPrice},
-			{Key: "address_id", Value: order.AddressID},
+			{Key: "address", Value: order.Address},
 		})
 
 		json.NewEncoder(w).Encode(orderResult)
@@ -228,8 +228,8 @@ func AddCart(w http.ResponseWriter, r *http.Request) {
 		_ = json.NewDecoder(r.Body).Decode(&cart)
 
 		cartResult, err := cartCollection.InsertOne(ctx, bson.D{
-			{Key: "user_id", Value: cart.UserID},
-			{Key: "product_id", Value: cart.ProductID},
+			{Key: "user", Value: cart.User},
+			{Key: "product", Value: cart.Product},
 			{Key: "piece", Value: cart.Piece},
 		})
 
@@ -251,7 +251,7 @@ func AddAddress(w http.ResponseWriter, r *http.Request) {
 
 		addressResult, err := addressCollection.InsertOne(ctx, bson.D{
 			{Key: "title", Value: address.Title},
-			{Key: "user_id", Value: address.UserID},
+			{Key: "user", Value: address.User},
 			{Key: "first_name", Value: address.FirstName},
 			{Key: "last_name", Value: address.LastName},
 			{Key: "mail", Value: address.Mail},
@@ -346,7 +346,7 @@ func UpdeteProduct(w http.ResponseWriter, r *http.Request) {
 			{Key: "name", Value: product.Name},
 			{Key: "detail", Value: product.Detail},
 			{Key: "price", Value: product.Price},
-			{Key: "category_id", Value: product.CategoryID},
+			{Key: "category", Value: product.Category},
 			{Key: "stock", Value: product.Stock},
 		}
 		result, err := productCollection.ReplaceOne(ctx, filter, replacement)
@@ -356,4 +356,31 @@ func UpdeteProduct(w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
+}
+
+func AddProducts(w http.ResponseWriter, r *http.Request) {
+	var products []models.Product
+	err := json.NewDecoder(r.Body).Decode(&products)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	var ctx, _ = context.WithTimeout(context.Background(), 10*time.Second)
+	productCollection := project.Collection("product")
+
+	documents := make([]interface{}, len(products))
+	for i, product := range products {
+		documents[i] = product
+	}
+
+	_, err = productCollection.InsertMany(ctx, documents)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Return success response
+	w.WriteHeader(http.StatusCreated)
+	w.Write([]byte("Products added successfully"))
 }

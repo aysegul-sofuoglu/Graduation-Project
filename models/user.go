@@ -11,5 +11,5 @@ type User struct {
 	UserName     string             `bson:"userName,omitempty" json:"user_name"`
 	UserPassword string             `bson:"userPassword,omitempty" json:"user_password"`
 	Mail         string             `bson:"mail,omitempty" json:"mail"`
-	AddressID    primitive.ObjectID `bson:"address_id,omitempty" json:"address_id"`
+	Address      primitive.ObjectID `bson:"address,omitempty" json:"address_id"`
 }

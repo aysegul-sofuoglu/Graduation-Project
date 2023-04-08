@@ -22,6 +22,7 @@ func main() {
 	r.HandleFunc("/addresses", server.GetAddresses).Methods("GET")
 
 	r.HandleFunc("/add-product", server.AddProduct).Methods("POST")
+	r.HandleFunc("/add-products", server.AddProducts).Methods("POST")
 	r.HandleFunc("/add-category", server.AddCategory).Methods("POST")
 	r.HandleFunc("/add-user", server.AddUser).Methods("POST")
 	r.HandleFunc("/add-order", server.AddOrder).Methods("POST")
