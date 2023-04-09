@@ -38,6 +38,9 @@ func main() {
 
 	r.HandleFunc("/update-product/{id}", server.UpdeteProduct).Methods("PUT")
 
+	r.HandleFunc("/sign-up", server.SignupHandler).Methods("POST")
+	r.HandleFunc("/login", server.LoginHandler).Methods("POST")
+
 	handler := cors.AllowAll().Handler(r)
 	fmt.Printf("server is running on port 8000")
 	log.Fatal(http.ListenAndServe(":8000", handler))

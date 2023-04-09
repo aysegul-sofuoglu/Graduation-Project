@@ -4,6 +4,8 @@ go 1.20
 
 require go.mongodb.org/mongo-driver v1.11.3
 
+require github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+
 require (
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/gorilla/mux v1.8.0

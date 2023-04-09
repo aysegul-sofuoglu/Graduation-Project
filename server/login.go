@@ -1,0 +1,97 @@
+package server
+
+import (
+	"context"
+	"encoding/json"
+	"graduationproject/models"
+	"net/http"
+	"time"
+
+	"github.com/dgrijalva/jwt-go"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"golang.org/x/crypto/bcrypt"
+)
+
+var connect = InıtiateMongoClient()
+
+func SignupHandler(w http.ResponseWriter, r *http.Request) {
+
+	userCollection := project.Collection("user")
+
+	var form models.User
+	err := json.NewDecoder(r.Body).Decode(&form)
+	if err != nil {
+		http.Error(w, "Invalid request", http.StatusBadRequest)
+		return
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(form.UserPassword), 10)
+	if err != nil {
+		http.Error(w, "Failed to hash password", http.StatusInternalServerError)
+		return
+	}
+
+	newUser := bson.M{
+		"first_name":    form.FirstName,
+		"last_name":     form.LastName,
+		"user_name":     form.UserName,
+		"user_password": hashedPassword,
+		"mail":          form.Mail,
+		"address":       form.Address,
+	}
+
+	result, err := userCollection.InsertOne(context.Background(), newUser)
+	if err != nil {
+		http.Error(w, "Failed to create user", http.StatusInternalServerError)
+		return
+	}
+
+	response := map[string]interface{}{
+		"userId": result.InsertedID,
+	}
+	json.NewEncoder(w).Encode(response)
+
+}
+
+func LoginHandler(w http.ResponseWriter, r *http.Request) {
+
+	userCollection := project.Collection("loginuser")
+
+	var form models.User
+	err := json.NewDecoder(r.Body).Decode(&form)
+	if err != nil {
+		http.Error(w, "Invalid request", http.StatusBadRequest)
+		return
+	}
+
+	filter := bson.M{"mail": form.Mail}
+	var user bson.M
+	err = userCollection.FindOne(context.Background(), filter).Decode(&user)
+	if err != nil {
+		http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+		return
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user["user_password"].(string)), []byte(form.UserPassword))
+	if err != nil {
+		http.Error(w, "Invalid email or password", http.StatusUnauthorized)
+		return
+	}
+
+	claims := jwt.MapClaims{}
+	claims["userId"] = user["_id"].(primitive.ObjectID).Hex()
+	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	signedToken, err := token.SignedString([]byte("secret"))
+	if err != nil {
+		http.Error(w, "Failed to create JWT", http.StatusInternalServerError)
+		return
+	}
+
+	response := map[string]interface{}{
+		"token": signedToken,
+	}
+
+	json.NewEncoder(w).Encode(response)
+}
