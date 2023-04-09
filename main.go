@@ -17,7 +17,8 @@ func main() {
 	r.HandleFunc("/products", server.GetProducts).Methods("GET")
 	r.HandleFunc("/categories", server.GetCategories).Methods("GET")
 	r.HandleFunc("/users", server.GetUsers).Methods("GET")
-	r.HandleFunc("/orders", server.GetOrders).Methods("GET")
+	r.HandleFunc("/orders", server.GetOrders).Methods("GET")           // /orders?user_id=....
+	r.HandleFunc("/orders-items", server.GetOrderItems).Methods("GET") // /orders-items?order_id=....
 	r.HandleFunc("/carts", server.GetCarts).Methods("GET")
 	r.HandleFunc("/addresses", server.GetAddresses).Methods("GET")
 

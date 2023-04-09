@@ -13,8 +13,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-var connect = InıtiateMongoClient()
-
 func SignupHandler(w http.ResponseWriter, r *http.Request) {
 
 	userCollection := project.Collection("user")
@@ -56,7 +54,7 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
-	userCollection := project.Collection("loginuser")
+	userCollection := project.Collection("user")
 
 	var form models.User
 	err := json.NewDecoder(r.Body).Decode(&form)
@@ -72,8 +70,9 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid email or password", http.StatusUnauthorized)
 		return
 	}
-
-	err = bcrypt.CompareHashAndPassword([]byte(user["user_password"].(string)), []byte(form.UserPassword))
+	userPass := user["user_password"]
+	stringObjectID := userPass.(primitive.Binary).Data
+	err = bcrypt.CompareHashAndPassword(stringObjectID, []byte(form.UserPassword))
 	if err != nil {
 		http.Error(w, "Invalid email or password", http.StatusUnauthorized)
 		return
