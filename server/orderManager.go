@@ -25,6 +25,7 @@ func GetOrders(w http.ResponseWriter, r *http.Request) {
 
 	orderCollection := project.Collection("order")
 	var ctx, _ = context.WithTimeout(context.Background(), 10*time.Second)
+
 	cursor, err := orderCollection.Find(ctx, bson.M{"user": userID})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -47,74 +48,38 @@ func GetOrders(w http.ResponseWriter, r *http.Request) {
 
 func GetOrderItems(w http.ResponseWriter, r *http.Request) {
 
-	var order bson.M
-	orderID := order["order_id"]
-
+	orderID := r.URL.Query().Get("order_id")
 	if orderID == "" {
 		http.Error(w, "order_id parameter is required", http.StatusBadRequest)
 		return
 	}
 
-	itemCollection := project.Collection("order")
+	orderCollection := project.Collection("order")
 	var ctx, _ = context.WithTimeout(context.Background(), 10*time.Second)
-	cursor, err := itemCollection.Find(ctx, bson.M{"_id": orderID})
+
+	orderIDHex, err := primitive.ObjectIDFromHex(orderID)
+	cursor, err := orderCollection.Find(ctx, bson.M{"_id": orderIDHex})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	items := []models.ProductOrder{}
-	if err = cursor.All(ctx, &items); err != nil {
+	var orders []models.Order
+	if err = cursor.All(ctx, &orders); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	if len(items) == 0 {
+	if len(orders) == 0 {
 		http.Error(w, "No orders found", http.StatusNotFound)
 		return
 	}
 
+	items := orders[0].Products
+
 	json.NewEncoder(w).Encode(items)
 
 }
-
-// func GetOrderItems(w http.ResponseWriter, r *http.Request) {
-// 	orderID := r.URL.Query().Get("order_id")
-// 	if orderID == "" {
-// 		http.Error(w, "order_id parameter is required", http.StatusBadRequest)
-// 		return
-// 	}
-
-// 	var ctx, _ = context.WithTimeout(context.Background(), 10*time.Second)
-// 	orderCollection := project.Collection("order")
-// 	order := orderCollection.FindOne(ctx, bson.M{"_id": orderID})
-
-// 	if order.Err() != nil {
-// 		http.Error(w, order.Err().Error(), http.StatusInternalServerError)
-// 		return
-// 	}
-
-// 	var orderDoc models.Order
-// 	if err := order.Decode(&orderDoc); err != nil {
-// 		http.Error(w, err.Error(), http.StatusInternalServerError)
-// 		return
-// 	}
-
-// 	orderItemCollection := project.Collection("order_item")
-// 	cursor, err := orderItemCollection.Find(ctx, bson.M{"order_id": orderID})
-// 	if err != nil {
-// 		http.Error(w, err.Error(), http.StatusInternalServerError)
-// 		return
-// 	}
-
-// 	if err = cursor.All(ctx, &orderItems); err != nil {
-// 		http.Error(w, err.Error(), http.StatusInternalServerError)
-// 		return
-// 	}
-
-// 	json.NewEncoder(w).Encode(orderItems)
-
-// }
 
 func AddOrder(w http.ResponseWriter, r *http.Request) {
 	var ctx, _ = context.WithTimeout(context.Background(), 10*time.Second)
@@ -128,7 +93,7 @@ func AddOrder(w http.ResponseWriter, r *http.Request) {
 		orderResult, err := orderCollection.InsertOne(ctx, bson.D{
 			{Key: "user", Value: order.User},
 			{Key: "products", Value: order.Products},
-			{Key: "total_price", Value: order.TotalPrice},
+			{Key: "totalPrice", Value: order.TotalPrice},
 		})
 
 		json.NewEncoder(w).Encode(orderResult)
