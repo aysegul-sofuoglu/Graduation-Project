@@ -37,10 +37,10 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 		_ = json.NewDecoder(r.Body).Decode(&user)
 
 		userResult, err := userCollection.InsertOne(ctx, bson.D{
-			{Key: "first_name", Value: user.FirstName},
-			{Key: "last_name", Value: user.LastName},
-			{Key: "user_name", Value: user.UserName},
-			{Key: "user_password", Value: user.UserPassword},
+			{Key: "firstName", Value: user.FirstName},
+			{Key: "lastName", Value: user.LastName},
+			{Key: "userName", Value: user.UserName},
+			{Key: "userPassword", Value: user.UserPassword},
 			{Key: "mail", Value: user.Mail},
 			{Key: "address", Value: user.Address},
 		})

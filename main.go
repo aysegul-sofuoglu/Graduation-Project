@@ -19,7 +19,7 @@ func main() {
 	r.HandleFunc("/users", server.GetUsers).Methods("GET")
 	r.HandleFunc("/orders", server.GetOrders).Methods("GET")           // /orders?user_id=....
 	r.HandleFunc("/orders-items", server.GetOrderItems).Methods("GET") // /orders-items?order_id=....
-	r.HandleFunc("/carts", server.GetCarts).Methods("GET")
+	r.HandleFunc("/carts", server.GetCarts).Methods("GET")             // /carts?user_id=...
 	r.HandleFunc("/addresses", server.GetAddresses).Methods("GET")
 
 	r.HandleFunc("/add-product", server.AddProduct).Methods("POST")
@@ -29,6 +29,7 @@ func main() {
 	r.HandleFunc("/add-order", server.AddOrder).Methods("POST")
 	r.HandleFunc("/add-cart", server.AddCart).Methods("POST")
 	r.HandleFunc("/add-address", server.AddAddress).Methods("POST")
+	r.HandleFunc("/add-to-cart", server.AddToCart).Methods("POST")
 
 	r.HandleFunc("/delete-product/{id}", server.DeleteProduct).Methods("DELETE")
 	r.HandleFunc("/delete-category/{id}", server.DeleteCategory).Methods("DELETE")
