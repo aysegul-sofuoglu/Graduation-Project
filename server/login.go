@@ -80,13 +80,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid email or password3", http.StatusUnauthorized)
 		return
 	}
-	// userPass := user["user_password"]
-	// stringObjectID := userPass.(primitive.Binary).Data
-	// err = bcrypt.CompareHashAndPassword(stringObjectID, []byte(form.UserPassword))
-	// if err != nil {
-	// 	http.Error(w, "Invalid email or password", http.StatusUnauthorized)
-	// 	return
-	// }
 
 	claims := jwt.MapClaims{}
 	claims["userId"] = user["_id"].(primitive.ObjectID).Hex()

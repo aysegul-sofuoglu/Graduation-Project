@@ -115,7 +115,6 @@ func AddProducts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Return success response
 	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte("Products added successfully"))
 }
