@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
@@ -36,13 +37,20 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 		var user models.User
 		_ = json.NewDecoder(r.Body).Decode(&user)
 
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.UserPassword), bcrypt.DefaultCost)
+		if err != nil {
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+
 		userResult, err := userCollection.InsertOne(ctx, bson.D{
 			{Key: "firstName", Value: user.FirstName},
 			{Key: "lastName", Value: user.LastName},
 			{Key: "userName", Value: user.UserName},
-			{Key: "userPassword", Value: user.UserPassword},
+			{Key: "userPassword", Value: hashedPassword},
 			{Key: "mail", Value: user.Mail},
 			{Key: "address", Value: user.Address},
+			{Key: "role", Value: user.Role},
 		})
 
 		json.NewEncoder(w).Encode(userResult)

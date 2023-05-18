@@ -14,31 +14,34 @@ func main() {
 
 	r := mux.NewRouter()
 
-	r.HandleFunc("/products", server.GetProducts).Methods("GET")
-	r.HandleFunc("/categories", server.GetCategories).Methods("GET")
-	r.HandleFunc("/users", server.GetUsers).Methods("GET")
-	r.HandleFunc("/orders", server.GetOrders).Methods("GET")           // /orders?user_id=....
-	r.HandleFunc("/orders-items", server.GetOrderItems).Methods("GET") // /orders-items?order_id=....
-	r.HandleFunc("/carts", server.GetCarts).Methods("GET")             // /carts?user_id=...
-	r.HandleFunc("/addresses", server.GetAddresses).Methods("GET")
+	r.HandleFunc("/products", server.AuthorizeCustomer(server.GetProducts)).Methods("GET")
+	r.HandleFunc("/categories", server.AuthorizeCustomer((server.GetCategories))).Methods("GET")
+	r.HandleFunc("/users", server.AuthorizeAdmin(server.GetUsers)).Methods("GET")
+	r.HandleFunc("/orders", server.AuthorizeSeller(server.GetOrders)).Methods("GET")           // /orders?user_id=....
+	r.HandleFunc("/orders-items", server.AuthorizeSeller(server.GetOrderItems)).Methods("GET") // /orders-items?order_id=....
+	r.HandleFunc("/carts", server.AuthorizeSeller(server.GetCarts)).Methods("GET")             // /carts?user_id=...
+	r.HandleFunc("/addresses", server.AuthorizeSeller(server.GetAddresses)).Methods("GET")
+	r.HandleFunc("/roles", server.AuthorizeAdmin(server.GetRoles)).Methods("GET")
 
-	r.HandleFunc("/add-product", server.AddProduct).Methods("POST")
-	r.HandleFunc("/add-products", server.AddProducts).Methods("POST")
-	r.HandleFunc("/add-category", server.AddCategory).Methods("POST")
+	r.HandleFunc("/add-product", server.AuthorizeSeller(server.AddProduct)).Methods("POST")
+	r.HandleFunc("/add-products", server.AuthorizeSeller(server.AddProducts)).Methods("POST")
+	r.HandleFunc("/add-category", server.AuthorizeAdmin(server.AddCategory)).Methods("POST")
 	r.HandleFunc("/add-user", server.AddUser).Methods("POST")
-	r.HandleFunc("/add-order", server.AddOrder).Methods("POST")
-	r.HandleFunc("/add-cart", server.AddCart).Methods("POST")
-	r.HandleFunc("/add-address", server.AddAddress).Methods("POST")
-	r.HandleFunc("/add-to-cart", server.AddToCart).Methods("POST")
+	r.HandleFunc("/add-order", server.AuthorizeCustomer(server.AddOrder)).Methods("POST")
+	r.HandleFunc("/add-cart", server.AuthorizeCustomer(server.AddCart)).Methods("POST")
+	r.HandleFunc("/add-address", server.AuthorizeCustomer(server.AddAddress)).Methods("POST")
+	r.HandleFunc("/add-to-cart", server.AuthorizeCustomer(server.AddToCart)).Methods("POST")
+	r.HandleFunc("/add-role", server.AuthorizeAdmin(server.AddRole)).Methods("POST")
 
-	r.HandleFunc("/delete-product/{id}", server.DeleteProduct).Methods("DELETE")
-	r.HandleFunc("/delete-category/{id}", server.DeleteCategory).Methods("DELETE")
-	r.HandleFunc("/delete-user/{id}", server.DeleteUser).Methods("DELETE")
-	r.HandleFunc("/delete-order/{id}", server.DeleteOrder).Methods("DELETE")
-	r.HandleFunc("/delete-cart/{id}", server.DeleteCart).Methods("DELETE")
-	r.HandleFunc("/delete-address/{id}", server.DeleteAddress).Methods("DELETE")
+	r.HandleFunc("/delete-product/{id}", server.AuthorizeSeller(server.DeleteProduct)).Methods("DELETE")
+	r.HandleFunc("/delete-category/{id}", server.AuthorizeAdmin(server.DeleteCategory)).Methods("DELETE")
+	r.HandleFunc("/delete-user/{id}", server.AuthorizeAdmin(server.DeleteUser)).Methods("DELETE")
+	r.HandleFunc("/delete-order/{id}", server.AuthorizeCustomer(server.DeleteOrder)).Methods("DELETE")
+	r.HandleFunc("/delete-cart/{id}", server.AuthorizeCustomer(server.DeleteCart)).Methods("DELETE")
+	r.HandleFunc("/delete-address/{id}", server.AuthorizeCustomer(server.DeleteAddress)).Methods("DELETE")
+	r.HandleFunc("/delete-role/{id}", server.AuthorizeAdmin(server.DeleteRole)).Methods("DELETE")
 
-	r.HandleFunc("/update-product/{id}", server.UpdeteProduct).Methods("PUT")
+	r.HandleFunc("/update-product/{id}", server.AuthorizeSeller(server.UpdeteProduct)).Methods("PUT")
 
 	r.HandleFunc("/sign-up", server.SignupHandler).Methods("POST")
 	r.HandleFunc("/login", server.LoginHandler).Methods("POST")

@@ -16,6 +16,7 @@ var orders []models.Order
 var orderItems []models.ProductOrder
 var carts []models.Cart
 var addresses []models.Address
+var roles []models.Role
 
 func InitiateMongoClient() *mongo.Client {
 

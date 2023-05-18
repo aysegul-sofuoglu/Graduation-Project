@@ -12,4 +12,5 @@ type User struct {
 	UserPassword string             `bson:"userPassword,omitempty" json:"user_password"`
 	Mail         string             `bson:"mail,omitempty" json:"mail"`
 	Address      primitive.ObjectID `bson:"address,omitempty" json:"address_id"`
+	Role         string             `bson:"role,omitempty" json:"role"`
 }

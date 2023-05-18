@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"graduationproject/models"
 	"log"
 	"net/http"
@@ -68,19 +69,19 @@ func AddCart(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// ???????????????????????
 func DeleteCart(w http.ResponseWriter, r *http.Request) {
 
 	var ctx, _ = context.WithTimeout(context.Background(), 10*time.Second)
 	cartCollection := project.Collection("cart")
 
 	id := mux.Vars(r)["id"]
-	objId, _ := primitive.ObjectIDFromHex(id)
+	objId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		errors.New("error")
+	}
 	cartCollection.DeleteOne(ctx, bson.M{"_id": objId})
 
 }
-
-//???????????????????????????
 
 func AddToCart(w http.ResponseWriter, r *http.Request) {
 
