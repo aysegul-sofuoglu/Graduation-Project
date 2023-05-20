@@ -28,6 +28,44 @@ func GetProducts(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func GetProductsByCategoryId(w http.ResponseWriter, r *http.Request) {
+
+	categoryID := r.URL.Query().Get("category_id")
+
+	if categoryID == "" {
+		http.Error(w, "category_id parameter is required", http.StatusBadRequest)
+		return
+	}
+
+	objectID, err := primitive.ObjectIDFromHex(categoryID)
+	if err != nil {
+		http.Error(w, "Invalid category_id", http.StatusBadRequest)
+		return
+	}
+
+	productCollection := project.Collection("product")
+	var ctx, _ = context.WithTimeout(context.Background(), 10*time.Second)
+
+	cursor, err := productCollection.Find(ctx, bson.M{"category": objectID})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var products []models.Product
+	if err = cursor.All(ctx, &products); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if len(products) == 0 {
+		http.Error(w, "No products found", http.StatusNotFound)
+		return
+	}
+
+	json.NewEncoder(w).Encode(products)
+}
+
 func AddProduct(w http.ResponseWriter, r *http.Request) {
 
 	var ctx, _ = context.WithTimeout(context.Background(), 10*time.Second)
