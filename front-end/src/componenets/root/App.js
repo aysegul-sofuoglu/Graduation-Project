@@ -7,6 +7,7 @@ import FormDemo2 from "../navi/FormDemo2"
 
 import Dashboard from "./Dashboard";
 import cartDetail from "../cart/cartDetail";
+import AddOrUpdateProduct from "../products/AddOrUpdateProduct";
 
 export default class App extends Component {
 
@@ -24,6 +25,7 @@ export default class App extends Component {
             <Route path="/cart" exact Component={cartDetail} ></Route>
             <Route path="/form1" element={<FormDemo/>}></Route>
             <Route path="/form2" element={<FormDemo2/>}></Route>
+            <Route path="/saveproduct/:productId" element={<AddOrUpdateProduct/>}></Route>
           </Routes>
        
 
