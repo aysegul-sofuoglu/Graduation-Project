@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Nav, NavLink, NavItem, Collapse, NavbarToggler,NavbarBrand,Navbar} from "reactstrap";
-import CartSummary from "./CartSummary";
+import CartSummary from "../cart/cartSummary";
 import { Link } from "react-router-dom";
 
 function Navi(props) {
@@ -17,14 +17,23 @@ function Navi(props) {
         <Collapse Collapse isOpen={isOpen} navbar>
           <Nav className="navbar-nav me-auto mb-2 mb-lg-0">
             <NavItem>
-              <Link to="/form1/">Form Demo1</Link>
+              <NavLink>
+              <Link to="/form1/">Login</Link>
+              </NavLink>
+              
+            </NavItem>
+            <NavItem>
+              <NavLink>
+              <Link to="/form2/">SignUp</Link>
+              </NavLink>
+              
             </NavItem>
             <NavItem>
               <NavLink href="https://github.com/reactstrap/reactstrap">
                 GitHub
               </NavLink>
             </NavItem>
-            <CartSummary removeFromCart={props.removeFromCart} cart={props.cart}/>
+            <CartSummary></CartSummary>
           </Nav>
      
         </Collapse>
