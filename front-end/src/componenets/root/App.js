@@ -8,6 +8,7 @@ import FormDemo2 from "../navi/FormDemo2"
 import Dashboard from "./Dashboard";
 import cartDetail from "../cart/cartDetail";
 import AddOrUpdateProduct from "../products/AddOrUpdateProduct";
+import NotFound from "../common/NotFound";
 
 export default class App extends Component {
 
@@ -21,11 +22,13 @@ export default class App extends Component {
           <Navi/>
           <Routes>
             <Route path="/" exact Component={Dashboard} ></Route>
-            <Route path="/produuct" exact Component={Dashboard} ></Route>
+            <Route path="/product" exact Component={Dashboard} ></Route>
             <Route path="/cart" exact Component={cartDetail} ></Route>
-            <Route path="/form1" element={<FormDemo/>}></Route>
-            <Route path="/form2" element={<FormDemo2/>}></Route>
-            <Route path="/saveproduct/:productId" element={<AddOrUpdateProduct/>}></Route>
+            <Route path="/form1" Component={FormDemo}></Route>
+            <Route path="/form2" Component={FormDemo2}></Route>
+            <Route path="/saveproduct/:productId" Component={AddOrUpdateProduct} exact></Route>
+            <Route path="/saveproduct" Component={AddOrUpdateProduct}></Route>
+            <Route path="*" Component={NotFound} />
           </Routes>
        
 

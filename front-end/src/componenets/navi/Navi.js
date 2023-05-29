@@ -12,7 +12,7 @@ function Navi(props) {
     <div className="navbar navbar-expand-lg navbar-light bg-light">
       <Navbar {...props}>
  
-        <NavbarBrand href="/">TAKeIT</NavbarBrand>
+        <NavbarBrand><Link to={"/"}>TAKeIT</Link></NavbarBrand>
         <NavbarToggler onClick={toggle} />
         <Collapse Collapse isOpen={isOpen} navbar>
           <Nav className="navbar-nav me-auto mb-2 mb-lg-0">
@@ -29,8 +29,8 @@ function Navi(props) {
               
             </NavItem>
             <NavItem>
-              <NavLink href="https://github.com/reactstrap/reactstrap">
-                GitHub
+              <NavLink>
+              <Link to="/saveproduct">Ürün Ekle</Link>
               </NavLink>
             </NavItem>
             <CartSummary></CartSummary>

@@ -30,10 +30,10 @@ class ProductList extends Component {
           <thead>
             <tr>
              
-              <th>Name</th>
-              <th>Detail</th>
-              <th>Price</th>
-              <th>Stock</th>
+              <th>Ürün</th>
+              <th>Detay</th>
+              <th>Fiyat</th>
+              <th>Stok</th>
               <th></th>
             </tr>
           </thead>
