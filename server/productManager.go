@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"encoding/json"
+
 	"graduationproject/models"
 	"log"
 	"net/http"
@@ -141,31 +142,59 @@ func DeleteProduct(w http.ResponseWriter, r *http.Request) {
 
 func UpdeteProduct(w http.ResponseWriter, r *http.Request) {
 
-	var ctx, _ = context.WithTimeout(context.Background(), 10*time.Second)
+	if r.Method != http.MethodPut {
+		http.Error(w, "Geçersiz istek metodu", http.StatusBadRequest)
+		return
+	}
+
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
 	productCollection := project.Collection("product")
 
-	if r.Method == "PUT" {
-		w.Header().Set("Content-Type", "application/json")
-		var product models.Product
-		_ = json.NewDecoder(r.Body).Decode(&product)
-
-		id := mux.Vars(r)["id"]
-		objId, _ := primitive.ObjectIDFromHex(id)
-		filter := bson.D{{"_id", objId}}
-		replacement := bson.D{
-			{Key: "name", Value: product.Name},
-			{Key: "detail", Value: product.Detail},
-			{Key: "price", Value: product.Price},
-			{Key: "category", Value: product.Category},
-			{Key: "stock", Value: product.Stock},
-		}
-		result, err := productCollection.ReplaceOne(ctx, filter, replacement)
-		json.NewEncoder(w).Encode(result)
-		if err != nil {
-			log.Fatal(err)
-		}
-
+	var product models.Product
+	if err := json.NewDecoder(r.Body).Decode(&product); err != nil {
+		http.Error(w, "Geçersiz ürün verisi", http.StatusBadRequest)
+		return
 	}
+
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		http.Error(w, "Geçersiz ürün ID'si", http.StatusBadRequest)
+		return
+	}
+
+	filter := bson.M{"_id": objID}
+
+	update := bson.M{
+		"$set": bson.M{
+			"name":     product.Name,
+			"detail":   product.Detail,
+			"price":    product.Price,
+			"category": product.Category,
+			"stock":    product.Stock,
+		},
+	}
+
+	result, err := productCollection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		http.Error(w, "Ürün güncelleme hatası", http.StatusInternalServerError)
+		return
+	}
+
+	response := map[string]interface{}{
+		"matchedCount":  result.MatchedCount,
+		"modifiedCount": result.ModifiedCount,
+		"upsertedCount": result.UpsertedCount,
+		"upsertedID":    result.UpsertedID,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+
 }
 
 func AddProducts(w http.ResponseWriter, r *http.Request) {

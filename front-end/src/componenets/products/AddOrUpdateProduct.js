@@ -3,16 +3,16 @@ import { connect } from "react-redux";
 import { getCategories } from "../../redux/actions/categoryActions";
 import { saveProduct } from "../../redux/actions/productActions";
 import ProductDetail from "./ProductDetail";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 function AddOrUpdateProduct({
   products,
   categories,
   getCategories,
   saveProduct,
-  history
 }) {
   const { productId } = useParams();
+  const navigate = useNavigate();
   const [editedProduct, setEditedProduct] = useState(null);
 
   useEffect(() => {
@@ -25,16 +25,32 @@ function AddOrUpdateProduct({
 
   function handleChange(event) {
     const { name, value } = event.target;
-    setEditedProduct((previousProduct) => ({
-      ...previousProduct,
-      [name]: name === "category_id" ? parseInt(value, 10) : value
-    }));
+    if (name === "category_id") {
+      const selectedCategory = categories.find(
+        (category) => category.id === value
+      );
+      const categoryId = selectedCategory ? selectedCategory.id : "";
+      setEditedProduct((previousProduct) => ({
+        ...previousProduct,
+        [name]: categoryId,
+      }));
+    } else if (name === "price" || name === "stock") {
+      setEditedProduct((previousProduct) => ({
+        ...previousProduct,
+        [name]: parseInt(value, 10),
+      }));
+    } else {
+      setEditedProduct((previousProduct) => ({
+        ...previousProduct,
+        [name]: value,
+      }));
+    }
   }
 
   function handleSave(event) {
     event.preventDefault();
     saveProduct(editedProduct).then(() => {
-      history.push("/");
+      navigate("/");
     });
   }
 
@@ -59,13 +75,13 @@ function getProductById(products, productId) {
 function mapStateToProps(state) {
   return {
     products: state.productListReducer,
-    categories: state.categoryListReducer
+    categories: state.categoryListReducer,
   };
 }
 
 const mapDispatchToProps = {
   getCategories,
-  saveProduct
+  saveProduct,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddOrUpdateProduct);

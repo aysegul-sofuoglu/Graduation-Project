@@ -35,7 +35,7 @@ func main() {
 	r.HandleFunc("/add-to-cart", server.AuthorizeCustomer(server.AddToCart)).Methods("POST")
 	r.HandleFunc("/add-role", server.AuthorizeAdmin(server.AddRole)).Methods("POST")
 
-	r.HandleFunc("/delete-product/{id}", server.AuthorizeSeller(server.DeleteProduct)).Methods("DELETE")
+	r.HandleFunc("/delete-product/{id}", server.DeleteProduct).Methods("DELETE")
 	r.HandleFunc("/delete-category/{id}", server.AuthorizeAdmin(server.DeleteCategory)).Methods("DELETE")
 	r.HandleFunc("/delete-user/{id}", server.AuthorizeAdmin(server.DeleteUser)).Methods("DELETE")
 	r.HandleFunc("/delete-order/{id}", server.AuthorizeCustomer(server.DeleteOrder)).Methods("DELETE")

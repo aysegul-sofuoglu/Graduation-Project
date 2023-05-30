@@ -15,7 +15,7 @@ const ProductDetail = ({ categories, product, onSave, onChange }) => {
       ></TextInput>
 
       <SelectInput
-        name="category"
+        name="category_id"
         label="Kategori"
         value={product.category_id || ""}
         defaultOption="Seçiniz"
@@ -38,7 +38,7 @@ const ProductDetail = ({ categories, product, onSave, onChange }) => {
       <TextInput
         name="price"
         label="Fiyat"
-        value={product.price}
+        value={isNaN(product.price)?"":product.price.toString()}
         onChange={onChange}
         error="Hata"
       ></TextInput>
@@ -46,7 +46,7 @@ const ProductDetail = ({ categories, product, onSave, onChange }) => {
       <TextInput
         name="stock"
         label="Stok"
-        value={product.stock}
+        value={isNaN(product.stock)?"":product.stock.toString()}
         onChange={onChange}
         error="Hata"
       ></TextInput>
