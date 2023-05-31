@@ -14,6 +14,7 @@ function AddOrUpdateProduct({
   const { productId } = useParams();
   const navigate = useNavigate();
   const [editedProduct, setEditedProduct] = useState(null);
+  const [errors, setErrors]=useState({});
 
   useEffect(() => {
     if (categories.length === 0) {
@@ -45,6 +46,33 @@ function AddOrUpdateProduct({
         [name]: value,
       }));
     }
+
+   validate(name,value)
+
+  }
+
+  function validate(name,value){
+     if(value===""){
+      if(name==="name"){
+        setErrors(previousErrors=>({...previousErrors, name:"Ürün ismi olmalıdır."}))
+      }
+      if(name==="detail"){
+        setErrors(previousErrors=>({...previousErrors, detail:"Ürün detayı olmalıdır."}))
+      }
+      if(name==="price"){
+        setErrors(previousErrors=>({...previousErrors, price:"Ürün fiyatı olmalıdır."}))
+      }
+      if(name==="stock"){
+        setErrors(previousErrors=>({...previousErrors, stock:"Ürün stok bilgisi olmalıdır."}))
+      }
+      if(name==="category_id"){
+        setErrors(previousErrors=>({...previousErrors, category_id:"Ürün kategori bilgisi olmalıdır."}))
+      }
+          
+    }else{
+      setErrors(previousErrors=>({...previousErrors, name:"",detail:"", price:"", stock:"", category_id:""}))
+    }
+
   }
 
   function handleSave(event) {
@@ -64,6 +92,7 @@ function AddOrUpdateProduct({
       categories={categories}
       onChange={handleChange}
       onSave={handleSave}
+      errors={errors}
     />
   );
 }

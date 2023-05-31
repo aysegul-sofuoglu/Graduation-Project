@@ -18,13 +18,13 @@ function Navi(props) {
           <Nav className="navbar-nav me-auto mb-2 mb-lg-0">
             <NavItem>
               <NavLink>
-              <Link to="/form1/">Login</Link>
+              <Link to="/login/">Login</Link>
               </NavLink>
               
             </NavItem>
             <NavItem>
               <NavLink>
-              <Link to="/form2/">SignUp</Link>
+              <Link to="/signup/">SignUp</Link>
               </NavLink>
               
             </NavItem>

@@ -2,7 +2,7 @@ import React from "react";
 import TextInput from "../toolbox/TextInput";
 import SelectInput from "../toolbox/SelectInput";
 
-const ProductDetail = ({ categories, product, onSave, onChange }) => {
+const ProductDetail = ({ categories, product, onSave, onChange, errors }) => {
   return (
     <form onSubmit={onSave}>
       <h2>{product.id ? "Güncelle" : "Ekle"}</h2>
@@ -11,20 +11,20 @@ const ProductDetail = ({ categories, product, onSave, onChange }) => {
         label="Ürün İsmi"
         value={product.name}
         onChange={onChange}
-        error="Hata"
+        error={errors.name}
       ></TextInput>
 
       <SelectInput
         name="category_id"
         label="Kategori"
-        value={product.category_id || ""}
+        value={product.category_id}
         defaultOption="Seçiniz"
         options={categories.map((category) => ({
           value: category.id,
           text: category.category,
         }))}
         onChange={onChange}
-        error="Hata"
+        error={errors.category_id}
       ></SelectInput>
 
       <TextInput
@@ -32,7 +32,7 @@ const ProductDetail = ({ categories, product, onSave, onChange }) => {
         label="Detay"
         value={product.detail}
         onChange={onChange}
-        error="Hata"
+        error={errors.detail}
       ></TextInput>
 
       <TextInput
@@ -40,7 +40,7 @@ const ProductDetail = ({ categories, product, onSave, onChange }) => {
         label="Fiyat"
         value={isNaN(product.price)?"":product.price.toString()}
         onChange={onChange}
-        error="Hata"
+        error={errors.price}
       ></TextInput>
 
       <TextInput
@@ -48,7 +48,7 @@ const ProductDetail = ({ categories, product, onSave, onChange }) => {
         label="Stok"
         value={isNaN(product.stock)?"":product.stock.toString()}
         onChange={onChange}
-        error="Hata"
+        error={errors.stock}
       ></TextInput>
 
       <button type="submit" className="btn btn-success">
