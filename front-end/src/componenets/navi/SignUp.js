@@ -27,6 +27,7 @@ function SignUp() {
       errors.user_password === "" &&
       errors.role === ""
     ) {
+   
       axios
         .post("http://localhost:8000/sign-up", values)
         .then((res) => {

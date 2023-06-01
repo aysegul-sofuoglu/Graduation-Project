@@ -47,6 +47,7 @@ func main() {
 
 	r.HandleFunc("/sign-up", server.SignupHandler).Methods("POST")
 	r.HandleFunc("/login", server.LoginHandler).Methods("POST")
+	r.HandleFunc("/logout", server.LogoutHandler).Methods("GET")
 
 	handler := cors.AllowAll().Handler(r)
 	fmt.Printf("server is running on port 8000")

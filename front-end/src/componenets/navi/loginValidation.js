@@ -14,12 +14,12 @@ function Validation(values){
         error.mail=""
     }
 
-    if(values.password === ""){
-        error.password = "şifre boş"
-    }else if(!password_pattern.test(values.password)){
-        error.password = "şifre eşleşmedi"
+    if(values.user_password === ""){
+        error.user_password = "şifre boş"
+    }else if(!password_pattern.test(values.user_password)){
+        error.user_password = "şifre eşleşmedi"
     }else{
-        error.password =""
+        error.user_password =""
     }
     return error;
 

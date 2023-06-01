@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"graduationproject/models"
 	"net/http"
 	"time"
@@ -31,13 +32,13 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	newUser := bson.M{
-		"first_name":    form.FirstName,
-		"last_name":     form.LastName,
-		"user_name":     form.UserName,
-		"user_password": hashedPassword,
-		"mail":          form.Mail,
-		"address":       form.Address,
-		"role":          form.Role,
+		"firstName":    form.FirstName,
+		"lastName":     form.LastName,
+		"userName":     form.UserName,
+		"userPassword": string(hashedPassword),
+		"mail":         form.Mail,
+		"address":      form.Address,
+		"role":         form.Role,
 	}
 
 	result, err := userCollection.InsertOne(context.Background(), newUser)
@@ -77,6 +78,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = bcrypt.CompareHashAndPassword([]byte(usr.UserPassword), []byte(form.UserPassword))
 	if err != nil {
+		fmt.Println("Hash karşılaştırma hatası:", err)
 		http.Error(w, "Invalid email or password3", http.StatusUnauthorized)
 		return
 	}
@@ -96,5 +98,16 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		"token": signedToken,
 	}
 
+	json.NewEncoder(w).Encode(response)
+}
+
+func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+
+	response := map[string]interface{}{
+		"message": "Çıkış başarılı",
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(response)
 }
