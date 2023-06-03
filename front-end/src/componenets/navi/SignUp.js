@@ -46,7 +46,7 @@ function SignUp() {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center bg-primary vh-100" >
+    <div className="d-flex justify-content-center align-items-center bg-warning vh-100" >
       <div className="bg-white p-4 rounded w-50" >
         <h2>ÜYE OL</h2>
         <form action="" onSubmit={handleSubmit}>

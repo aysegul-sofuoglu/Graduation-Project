@@ -18,9 +18,28 @@ export default function cartReducer(state=initialState.cart,action){
             }
 
 
+            // case actionTypes.REMOVE_FROM_CART:
+            //     const newState2 = state.filter(cartItem=>cartItem.product.id!==action.payload.id)
+            //     return newState2;
+
             case actionTypes.REMOVE_FROM_CART:
-                const newState2 = state.filter(cartItem=>cartItem.product.id!==action.payload.id)
-                return newState2;
+  const itemToRemove = state.find((cartItem) => cartItem.product.id === action.payload.id);
+
+  if (itemToRemove.quantity > 1) {
+    const updatedItem = {
+      ...itemToRemove,
+      quantity: itemToRemove.quantity - 1,
+    };
+
+    const updatedState = state.map((cartItem) =>
+      cartItem.product.id === action.payload.id ? updatedItem : cartItem
+    );
+
+    return updatedState;
+  } else {
+    const newState2 = state.filter((cartItem) => cartItem.product.id !== action.payload.id);
+    return newState2;
+  }
 
         default:
             return state;

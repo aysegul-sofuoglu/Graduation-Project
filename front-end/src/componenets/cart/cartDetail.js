@@ -7,6 +7,11 @@ import alertify from "alertifyjs";
 
 class cartDetail extends Component {
 
+  addToCart = (product) => {
+    this.props.actions.addToCart({ quantity: 1, product });
+    alertify.success(product.name + " sepete eklendi!");
+  };
+
     removeFromCart(product){
         this.props.actions.removeFromCart(product);
         alertify.error(product.name + " sepetten silindi!")
@@ -32,7 +37,9 @@ class cartDetail extends Component {
               
                 <td>{cartItem.product.price}</td>
                 <td>{cartItem.quantity}</td>
-                <td><Button onClick={()=>this.removeFromCart(cartItem.product)} color="danger">SİL</Button></td>
+                <td><Button onClick={()=>this.removeFromCart(cartItem.product)} color="danger">-</Button>
+                <Button onClick={()=>this.addToCart(cartItem.product)} color="success">+</Button>
+                </td>
               </tr>
             ))}
 
@@ -47,7 +54,8 @@ class cartDetail extends Component {
 function mapDispatchToProps(dispatch){
     return{
         actions:{
-            removeFromCart: bindActionCreators(cartActions.removeFromCart, dispatch)
+            removeFromCart: bindActionCreators(cartActions.removeFromCart, dispatch),
+            addToCart: bindActionCreators(cartActions.addToCart, dispatch),
         }
     }
 }

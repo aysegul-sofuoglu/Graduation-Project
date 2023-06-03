@@ -18,13 +18,11 @@ function Navi(props) {
 
   const toggle = () => setIsOpen(!isOpen);
 
-  
-
   const handleLogout = () => {
     localStorage.removeItem("token");
-    
+
     setIsLoggedIn(false);
-    
+
     console.log("Çıkış işlemi başarılı");
     
   };
@@ -33,37 +31,87 @@ function Navi(props) {
     <div className="navbar navbar-expand-lg navbar-light bg-light">
       <Navbar {...props}>
         <NavbarBrand>
-          <Link to={"/"}>TAKeIT</Link>
+          <Link
+            to={"/"}
+            style={{
+              textDecoration: "none",
+              color: "black",
+              fontWeight: "bold",
+              fontSize: "25px",
+            }}
+          >
+            TAKeIT
+          </Link>
         </NavbarBrand>
         <NavbarToggler onClick={toggle} />
         <Collapse Collapse isOpen={isOpen} navbar>
-          <Nav className="navbar-nav me-auto mb-2 mb-lg-0">
-
-          {!isLoggedIn && (
-            <NavItem>
-              <NavLink>
-                <Link to="/login/">Login</Link>
-              </NavLink>
-            </NavItem>
-          )}
-            {isLoggedIn && (
+          <Nav className="navbar-nav ml-auto">
+            {!isLoggedIn && (
               <NavItem>
                 <NavLink>
-                  <Link to="/" onClick={handleLogout}>
+                  <Link
+                    to="/login/"
+                    style={{
+                      textDecoration: "none",
+                      color: "black",
+                      fontWeight: "bold",
+                      fontSize: "16px",
+                    }}
+                  >
+                    Giriş
+                  </Link>
+                </NavLink>
+              </NavItem>
+            )}
+            {isLoggedIn && (
+              <NavItem className="ml-auto">
+                <NavLink>
+                  <Link
+                    to="/"
+                    onClick={handleLogout}
+                    style={{
+                      textDecoration: "none",
+                      color: "black",
+                      fontWeight: "bold",
+                      fontSize: "16px",
+                    }}
+                  >
                     Çıkış
                   </Link>
                 </NavLink>
               </NavItem>
             )}
-            <NavItem>
+            <NavItem className="ml-auto">
               <NavLink>
-                <Link to="/saveproduct">Ürün Ekle</Link>
+                <Link
+                  to="/saveproduct"
+                  style={{
+                    textDecoration: "none",
+                    color: "black",
+                    fontWeight: "bold",
+                    fontSize: "16px",
+                  }}
+                >
+                  Ürün Ekle
+                </Link>
               </NavLink>
             </NavItem>
             <CartSummary></CartSummary>
           </Nav>
         </Collapse>
       </Navbar>
+
+      <style>
+        {`
+        .navbar-nav.ml-auto {
+          margin-left: auto;
+        }
+
+        .navbar-nav.ml-auto .nav-link {
+          margin-left: 200px;
+        }
+      `}
+      </style>
     </div>
   );
 }

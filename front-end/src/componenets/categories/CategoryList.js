@@ -22,7 +22,7 @@ class CategoryList extends Component {
         <ListGroup>
           {this.props.categories.map((category) => (
             <ListGroupItem
-              active={category.id === this.props.currentCategory.id}
+            className={category.id === this.props.currentCategory.id ? "active-category" : ""}
               onClick={() => this.selectCategory(category)}
               key={category.id}
             >
@@ -31,6 +31,13 @@ class CategoryList extends Component {
           ))}
         </ListGroup>
 
+        <style>
+        {`
+        .active-category {
+          background-color: #ffc107;
+        }
+      `}
+      </style>
  
       </div>
     );

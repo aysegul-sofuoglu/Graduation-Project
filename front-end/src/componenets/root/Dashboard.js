@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import { Col, Row } from 'reactstrap'
+import { Col, Container, Row } from 'reactstrap'
 import CategoryList from '../categories/CategoryList'
 import ProductList from '../products/ProductList'
 
 export default class Dashboard extends Component {
   render() {
     return (
-      <div>
+      <Container fluid>
         <Row>
             <Col xs="3">
                 <CategoryList></CategoryList>
@@ -15,7 +15,7 @@ export default class Dashboard extends Component {
                 <ProductList></ProductList>
             </Col>
         </Row>
-      </div>
+      </Container>
     )
   }
 }

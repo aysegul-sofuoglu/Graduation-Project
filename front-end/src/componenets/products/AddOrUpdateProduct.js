@@ -73,7 +73,7 @@ function AddOrUpdateProduct({
       }
           
     }else{
-      setErrors(previousErrors=>({...previousErrors, name:"",detail:"", price:"", stock:"", category_id:""}))
+      setErrors(previousErrors=>({...previousErrors, name:"",detail:"", price:"", stock:"", category_id:"", supply_cost:""}))
     }
 
   }

@@ -26,50 +26,11 @@ export function getProducts(categoryId) {
       const result = await response.json();
       dispatch(getProductsSuccess(result));
     } catch (error) {
-      // Hata durumunu yönetmek için gerekli adımları burada gerçekleştirin
+     
     }
   };
 }
 
-// export function updateProduct(product) {
-//   return function (dispatch) {
-//     fetch("http://localhost:8000/update-product/" + (product.id || ""), {
-//       method: "PUT",
-//       headers: {
-//         "content-type": "application/json",
-//       },
-//       body: JSON.stringify(product),
-//     })
-//       .then((response) => response.json())
-//       .then((result) => {
-//         dispatch(updateProductSuccess(result));
-//         alertify.success("Ürün güncellendi");
-//       })
-//       .catch((error) => {
-//         throw error;
-//       });
-//   };
-// }
-
-// export function createProduct(product) {
-//   return function (dispatch) {
-//     fetch("http://localhost:8000/add-product", {
-//       method: "POST",
-//       headers: {
-//         "content-type": "application/json",
-//       },
-//       body: JSON.stringify(product),
-//     })
-//       .then((response) => response.json())
-//       .then((result) => {
-//         dispatch(createProductSuccess(result));
-//         alertify.success("Ürün eklendi");
-//       })
-//       .catch((error) => {
-//         throw error;
-//       });
-//   };
-// }
 
 export async function saveProductApi(product) {
   const url = product.id
