@@ -24,6 +24,7 @@ function AddOrUpdateProduct({
     setEditedProduct({ ...product });
   }, [productId, categories, getCategories, products]);
 
+
   function handleChange(event) {
     const { name, value } = event.target;
     if (name === "category_id") {
@@ -35,7 +36,7 @@ function AddOrUpdateProduct({
         ...previousProduct,
         [name]: categoryId,
       }));
-    } else if (name === "price" || name === "stock") {
+    } else if (name === "price" || name === "stock" || name === "supply_cost") {
       setEditedProduct((previousProduct) => ({
         ...previousProduct,
         [name]: parseInt(value, 10),
@@ -46,9 +47,8 @@ function AddOrUpdateProduct({
         [name]: value,
       }));
     }
-
-   validate(name,value)
-
+  
+    validate(name, value);
   }
 
   function validate(name,value){
@@ -68,6 +68,9 @@ function AddOrUpdateProduct({
       if(name==="category_id"){
         setErrors(previousErrors=>({...previousErrors, category_id:"Ürün kategori bilgisi olmalıdır."}))
       }
+      if(name==="supply_cost"){
+        setErrors(previousErrors=>({...previousErrors, supply_cost:"Ürün tedarik bilgisi olmalıdır."}))
+      }
           
     }else{
       setErrors(previousErrors=>({...previousErrors, name:"",detail:"", price:"", stock:"", category_id:""}))
@@ -78,7 +81,9 @@ function AddOrUpdateProduct({
   function handleSave(event) {
     event.preventDefault();
     saveProduct(editedProduct).then(() => {
+      
       navigate("/");
+      window.location.reload();
     });
   }
 

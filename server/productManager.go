@@ -120,6 +120,7 @@ func AddProduct(w http.ResponseWriter, r *http.Request) {
 			{Key: "price", Value: product.Price},
 			{Key: "category", Value: product.Category},
 			{Key: "stock", Value: product.Stock},
+			{Key: "supplyCost", Value: product.SupplyCost},
 		})
 
 		json.NewEncoder(w).Encode(productResult)
@@ -171,11 +172,12 @@ func UpdeteProduct(w http.ResponseWriter, r *http.Request) {
 
 	update := bson.M{
 		"$set": bson.M{
-			"name":     product.Name,
-			"detail":   product.Detail,
-			"price":    product.Price,
-			"category": product.Category,
-			"stock":    product.Stock,
+			"name":       product.Name,
+			"detail":     product.Detail,
+			"price":      product.Price,
+			"category":   product.Category,
+			"stock":      product.Stock,
+			"supplyCost": product.SupplyCost,
 		},
 	}
 

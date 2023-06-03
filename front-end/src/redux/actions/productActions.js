@@ -14,16 +14,20 @@ export function updateProductSuccess(product) {
 }
 
 export function getProducts(categoryId) {
-  return function (dispatch) {
+  return async function (dispatch) {
     let url = "http://localhost:8000/products-by-categoryid";
 
     if (categoryId) {
       url = url + "?category_id=" + categoryId;
     }
 
-    return fetch(url)
-      .then((response) => response.json())
-      .then((result) => dispatch(getProductsSuccess(result)));
+    try {
+      const response = await fetch(url);
+      const result = await response.json();
+      dispatch(getProductsSuccess(result));
+    } catch (error) {
+      // Hata durumunu yönetmek için gerekli adımları burada gerçekleştirin
+    }
   };
 }
 
@@ -67,44 +71,58 @@ export function getProducts(categoryId) {
 //   };
 // }
 
-export function saveProductApi(product) {
+export async function saveProductApi(product) {
   const url = product.id
     ? `http://localhost:8000/update-product/${product.id}`
     : "http://localhost:8000/add-product";
 
-  return fetch(url, {
-    method: product.id ? "PUT" : "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(product),
-  })
-    .then(handleResponse)
-    .catch(handleError);
+  try {
+    const response = await fetch(url, {
+      method: product.id ? "PUT" : "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(product),
+    });
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      const error = await response.text();
+      throw new Error(error);
+    }
+  } catch (error) {
+    throw error;
+  }
 }
 
 export function saveProduct(product) {
-  return function (dispatch) {
-    return saveProductApi(product)
-      .then((savedProduct) => {
-        product.id
-          ? dispatch(updateProductSuccess(savedProduct))
-          : dispatch(createProductSuccess(savedProduct));
-      })
-      .catch((error) => {
-        throw error;
-      });
+  return function(dispatch) {
+    return new Promise((resolve, reject) => {
+      saveProductApi(product)
+        .then(savedProduct => {
+          if (product.id) {
+            dispatch(updateProductSuccess(savedProduct));
+          } else {
+            dispatch(createProductSuccess(savedProduct));
+          }
+          resolve();
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
   };
 }
 
-export async function handleResponse(response){
-  if(response.ok){
-    return response.json()
+export async function handleResponse(response) {
+  if (response.ok) {
+    return await response.json();
   }
 
-  const error = await response.text()
-  throw new Error(error)
+  const error = await response.text();
+  throw new Error(error);
 }
 
-export function handleError(error){
-  console.log("HATA OLUŞTU")
+export async function handleError(error) {
+  console.log("HATA OLUŞTU");
   throw error;
 }

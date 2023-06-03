@@ -22,7 +22,9 @@ function Navi(props) {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    
     setIsLoggedIn(false);
+    
     console.log("Çıkış işlemi başarılı");
     
   };
