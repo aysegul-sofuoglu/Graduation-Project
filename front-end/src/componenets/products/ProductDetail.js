@@ -139,6 +139,7 @@ const ProductDetail = ({ categories, product, onSave, onChange, errors }) => {
       <button type="submit" className="btn btn-success">
         Kaydet
       </button>
+     
     </form>
   );
 };

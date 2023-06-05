@@ -25,7 +25,7 @@ func main() {
 	r.HandleFunc("/addresses", server.AuthorizeSeller(server.GetAddresses)).Methods("GET")
 	r.HandleFunc("/roles", server.AuthorizeAdmin(server.GetRoles)).Methods("GET")
 
-	r.HandleFunc("/add-product", server.AddProduct).Methods("POST")
+	r.HandleFunc("/add-product", server.AuthorizeSeller(server.AddProduct)).Methods("POST")
 	r.HandleFunc("/add-products", server.AuthorizeSeller(server.AddProducts)).Methods("POST")
 	r.HandleFunc("/add-category", server.AuthorizeAdmin(server.AddCategory)).Methods("POST")
 	r.HandleFunc("/add-user", server.AddUser).Methods("POST")
@@ -43,7 +43,7 @@ func main() {
 	r.HandleFunc("/delete-address/{id}", server.AuthorizeCustomer(server.DeleteAddress)).Methods("DELETE")
 	r.HandleFunc("/delete-role/{id}", server.AuthorizeAdmin(server.DeleteRole)).Methods("DELETE")
 
-	r.HandleFunc("/update-product/{id}", server.UpdeteProduct).Methods("PUT")
+	r.HandleFunc("/update-product/{id}", server.AuthorizeSeller(server.UpdeteProduct)).Methods("PUT")
 
 	r.HandleFunc("/sign-up", server.SignupHandler).Methods("POST")
 	r.HandleFunc("/login", server.LoginHandler).Methods("POST")

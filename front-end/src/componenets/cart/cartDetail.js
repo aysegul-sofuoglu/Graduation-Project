@@ -26,7 +26,7 @@ class cartDetail extends Component {
              
               <th>ÜRÜN</th>
               <th>FİYAT</th>
-              <th>ADED</th>
+              <th>ADET</th>
               <th></th>
             </tr>
           </thead>

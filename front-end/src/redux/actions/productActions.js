@@ -1,4 +1,4 @@
-
+import axios from "axios";
 import * as actionTypes from "./actionTypes";
 
 export function getProductsSuccess(products) {
@@ -32,34 +32,42 @@ export function getProducts(categoryId) {
 }
 
 
+
+
+
 export async function saveProductApi(product) {
   const url = product.id
     ? `http://localhost:8000/update-product/${product.id}`
     : "http://localhost:8000/add-product";
 
   try {
-    const response = await fetch(url, {
+    const token = localStorage.getItem("token");
+    const response = await axios({
       method: product.id ? "PUT" : "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(product),
+      url: url,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+      },
+      data: product,
     });
 
-    if (response.ok) {
-      return await response.json();
-    } else {
-      const error = await response.text();
-      throw new Error(error);
-    }
+    return response.data;
   } catch (error) {
-    throw error;
+
+      if (error.response && error.response.status === 403) {
+      throw new Error("Bu işlemi gerçekleştirmek için yeterli yetkiniz yok.");
+    } else {
+      throw error;
+    }
   }
 }
 
 export function saveProduct(product) {
-  return function(dispatch) {
+  return function (dispatch) {
     return new Promise((resolve, reject) => {
       saveProductApi(product)
-        .then(savedProduct => {
+        .then((savedProduct) => {
           if (product.id) {
             dispatch(updateProductSuccess(savedProduct));
           } else {
@@ -67,12 +75,13 @@ export function saveProduct(product) {
           }
           resolve();
         })
-        .catch(error => {
+        .catch((error) => {
           reject(error);
         });
     });
   };
 }
+
 
 export async function handleResponse(response) {
   if (response.ok) {

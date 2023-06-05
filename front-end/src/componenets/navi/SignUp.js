@@ -120,7 +120,7 @@ function SignUp() {
               className="form-control rounded-0"
             >
               <option value="">Seçiniz...</option>
-              <option value="admin">Admin</option>
+              
               <option value="customer">Müşteri</option>
               <option value="seller">Satıcı</option>
             </select>

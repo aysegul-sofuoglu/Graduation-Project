@@ -5,6 +5,7 @@ import { saveProduct } from "../../redux/actions/productActions";
 import ProductDetail from "./ProductDetail";
 import { useParams, useNavigate } from "react-router-dom";
 
+
 function AddOrUpdateProduct({
   products,
   categories,
@@ -78,6 +79,10 @@ function AddOrUpdateProduct({
 
   }
 
+
+
+
+
   function handleSave(event) {
     event.preventDefault();
     saveProduct(editedProduct).then(() => {
@@ -98,6 +103,7 @@ function AddOrUpdateProduct({
       onChange={handleChange}
       onSave={handleSave}
       errors={errors}
+     
     />
   );
 }
