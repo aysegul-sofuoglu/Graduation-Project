@@ -3,12 +3,13 @@ import TextInput from "../toolbox/TextInput";
 import SelectInput from "../toolbox/SelectInput";
 import axios from "axios";
 
-const ProductDetail = ({ categories, product, onSave, onChange, errors }) => {
+import { useDispatch } from "react-redux";
+import { deleteProduct } from "../../redux/actions/productActions";
 
+const ProductDetail = ({ categories, product, onSave, onChange, errors }) => {
   const [exchangeRate, setExchangeRate] = useState(0);
   const [tryExchangeRate, setTryExchangeRate] = useState(0);
-
-
+  const dispatch = useDispatch(); 
 
   useEffect(() => {
     async function getExchangeRates() {
@@ -18,9 +19,8 @@ const ProductDetail = ({ categories, product, onSave, onChange, errors }) => {
         );
         const exchangeRates = response.data.rates;
 
-   
         setExchangeRate(exchangeRates.USD);
-        setTryExchangeRate(1/exchangeRates.TRY);
+        setTryExchangeRate(1 / exchangeRates.TRY);
       } catch (error) {
         console.error("Döviz kurları alınırken bir hata oluştu:", error);
       }
@@ -40,15 +40,23 @@ const ProductDetail = ({ categories, product, onSave, onChange, errors }) => {
 
     const profitLoss = parsedPrice - parsedSupplyCost;
 
-    
-    const usdProfitLoss = profitLoss * exchangeRate; 
-    const tryProfitLoss = profitLoss * tryExchangeRate; 
+    const usdProfitLoss = profitLoss * exchangeRate;
+    const tryProfitLoss = profitLoss * tryExchangeRate;
 
     return { usd: usdProfitLoss.toFixed(2), try: tryProfitLoss.toFixed(2) };
   };
 
   const calculatedProfitLoss = calculateProfitLoss();
 
+  const handleDelete = (productId) => {
+    dispatch(deleteProduct(productId))
+      .then(() => {
+        console.log("Ürün başarıyla silindi");
+      })
+      .catch((error) => {
+        console.log("Ürün silinirken bir hata oluştu:", error);
+      });
+  };
 
   return (
     <form onSubmit={onSave}>
@@ -106,7 +114,7 @@ const ProductDetail = ({ categories, product, onSave, onChange, errors }) => {
         error={errors.supply_cost}
       />
 
-<div>
+      <div>
         {Number.isNaN(calculatedProfitLoss.usd) ? null : (
           <>
             <label>Kar/Zarar (TL):</label>
@@ -136,10 +144,24 @@ const ProductDetail = ({ categories, product, onSave, onChange, errors }) => {
         )}
       </div>
 
-      <button type="submit" className="btn btn-success">
-        Kaydet
-      </button>
-     
+<div style={{ marginTop: "20px" }}>
+      <div style={{ display: "flex", gap: "10px" }}>
+        <button type="submit" className="btn btn-success">
+          Kaydet
+        </button>
+
+        {product.id && (
+          <button
+            type="submit"
+            className="btn btn-danger"
+            style={{ marginLeft: "10px" }}
+            onClick={() => handleDelete(product.id)}
+          >
+            SİL
+          </button>
+        )}
+      </div>
+      </div>
     </form>
   );
 };

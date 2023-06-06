@@ -13,6 +13,42 @@ export function updateProductSuccess(product) {
   return { type: actionTypes.UPDATE_PRODUCT_SUCCESS, payload: product };
 }
 
+export function deleteProductSuccess(product) {
+  return { type: actionTypes.DELETE_PRODUCT_SUCCESS, payload: product };
+}
+
+export async function deleteProductApi(productId) {
+  const url = `http://localhost:8000/delete-product/${productId}`;
+
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.delete(url, {
+      headers: {
+        Authorization: token,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export function deleteProduct(productId) {
+  return function (dispatch) {
+    return new Promise((resolve, reject) => {
+      deleteProductApi(productId)
+        .then(() => {
+          dispatch(deleteProductSuccess(productId));
+          resolve();
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  };
+}
+
 export function getProducts(categoryId) {
   return async function (dispatch) {
     let url = "http://localhost:8000/products-by-categoryid";
@@ -25,15 +61,9 @@ export function getProducts(categoryId) {
       const response = await fetch(url);
       const result = await response.json();
       dispatch(getProductsSuccess(result));
-    } catch (error) {
-     
-    }
+    } catch (error) {}
   };
 }
-
-
-
-
 
 export async function saveProductApi(product) {
   const url = product.id
@@ -54,8 +84,7 @@ export async function saveProductApi(product) {
 
     return response.data;
   } catch (error) {
-
-      if (error.response && error.response.status === 403) {
+    if (error.response && error.response.status === 403) {
       throw new Error("Bu işlemi gerçekleştirmek için yeterli yetkiniz yok.");
     } else {
       throw error;
@@ -81,7 +110,6 @@ export function saveProduct(product) {
     });
   };
 }
-
 
 export async function handleResponse(response) {
   if (response.ok) {

@@ -10,6 +10,12 @@ export default function saveProductReducer(
       return action.payload;
     case actionTypes.CREATE_PRODUCT_SUCCESS:
       return action.payload;
+      case actionTypes.DELETE_PRODUCT_SUCCESS: 
+        const productId = action.payload;
+        const updatedProducts=state.filter(
+          (product)=>product.id !== productId
+        ); 
+        return updatedProducts;
     default:
       return state;
   }

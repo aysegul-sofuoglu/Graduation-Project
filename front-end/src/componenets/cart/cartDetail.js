@@ -53,7 +53,7 @@ class cartDetail extends Component {
 
 function mapDispatchToProps(dispatch){
     return{
-        actions:{
+        actions:{ 
             removeFromCart: bindActionCreators(cartActions.removeFromCart, dispatch),
             addToCart: bindActionCreators(cartActions.addToCart, dispatch),
         }

@@ -5,7 +5,6 @@ import { saveProduct } from "../../redux/actions/productActions";
 import ProductDetail from "./ProductDetail";
 import { useParams, useNavigate } from "react-router-dom";
 
-
 function AddOrUpdateProduct({
   products,
   categories,
@@ -15,7 +14,7 @@ function AddOrUpdateProduct({
   const { productId } = useParams();
   const navigate = useNavigate();
   const [editedProduct, setEditedProduct] = useState(null);
-  const [errors, setErrors]=useState({});
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (categories.length === 0) {
@@ -24,7 +23,6 @@ function AddOrUpdateProduct({
     const product = getProductById(products, productId);
     setEditedProduct({ ...product });
   }, [productId, categories, getCategories, products]);
-
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -48,45 +46,64 @@ function AddOrUpdateProduct({
         [name]: value,
       }));
     }
-  
+
     validate(name, value);
   }
 
-  function validate(name,value){
-     if(value===""){
-      if(name==="name"){
-        setErrors(previousErrors=>({...previousErrors, name:"Ürün ismi olmalıdır."}))
+  function validate(name, value) {
+    if (value === "") {
+      if (name === "name") {
+        setErrors((previousErrors) => ({
+          ...previousErrors,
+          name: "Ürün ismi olmalıdır.",
+        }));
       }
-      if(name==="detail"){
-        setErrors(previousErrors=>({...previousErrors, detail:"Ürün detayı olmalıdır."}))
+      if (name === "detail") {
+        setErrors((previousErrors) => ({
+          ...previousErrors,
+          detail: "Ürün detayı olmalıdır.",
+        }));
       }
-      if(name==="price"){
-        setErrors(previousErrors=>({...previousErrors, price:"Ürün fiyatı olmalıdır."}))
+      if (name === "price") {
+        setErrors((previousErrors) => ({
+          ...previousErrors,
+          price: "Ürün fiyatı olmalıdır.",
+        }));
       }
-      if(name==="stock"){
-        setErrors(previousErrors=>({...previousErrors, stock:"Ürün stok bilgisi olmalıdır."}))
+      if (name === "stock") {
+        setErrors((previousErrors) => ({
+          ...previousErrors,
+          stock: "Ürün stok bilgisi olmalıdır.",
+        }));
       }
-      if(name==="category_id"){
-        setErrors(previousErrors=>({...previousErrors, category_id:"Ürün kategori bilgisi olmalıdır."}))
+      if (name === "category_id") {
+        setErrors((previousErrors) => ({
+          ...previousErrors,
+          category_id: "Ürün kategori bilgisi olmalıdır.",
+        }));
       }
-      if(name==="supply_cost"){
-        setErrors(previousErrors=>({...previousErrors, supply_cost:"Ürün tedarik bilgisi olmalıdır."}))
+      if (name === "supply_cost") {
+        setErrors((previousErrors) => ({
+          ...previousErrors,
+          supply_cost: "Ürün tedarik bilgisi olmalıdır.",
+        }));
       }
-          
-    }else{
-      setErrors(previousErrors=>({...previousErrors, name:"",detail:"", price:"", stock:"", category_id:"", supply_cost:""}))
+    } else {
+      setErrors((previousErrors) => ({
+        ...previousErrors,
+        name: "",
+        detail: "",
+        price: "",
+        stock: "",
+        category_id: "",
+        supply_cost: "",
+      }));
     }
-
   }
-
-
-
-
 
   function handleSave(event) {
     event.preventDefault();
     saveProduct(editedProduct).then(() => {
-      
       navigate("/");
       window.location.reload();
     });
@@ -103,7 +120,6 @@ function AddOrUpdateProduct({
       onChange={handleChange}
       onSave={handleSave}
       errors={errors}
-     
     />
   );
 }
