@@ -17,6 +17,22 @@ class cartDetail extends Component {
         alertify.error(product.name + " sepetten silindi!")
     }
 
+    calculateTotalPrice=()=>{
+      const {cart}=this.props;
+      let totalPrice=0;
+
+
+      cart.forEach((cartItem)=>{
+        const productPrice = cartItem.product.price;
+        const quantity = cartItem.quantity;
+        const itemPrice = productPrice*quantity;
+        totalPrice += itemPrice;
+      })
+
+      return totalPrice;
+
+    }
+
   render() {
     return (
       <div>
@@ -45,6 +61,7 @@ class cartDetail extends Component {
 
           </tbody>
         </Table>
+        <th>SEPET TUTARI: {this.calculateTotalPrice()} TL</th>
       </div>
     )
   }
