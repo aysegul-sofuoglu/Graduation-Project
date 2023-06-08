@@ -24,6 +24,7 @@ func main() {
 	r.HandleFunc("/carts", server.AuthorizeSeller(server.GetCarts)).Methods("GET")             // /carts?user_id=...
 	r.HandleFunc("/addresses", server.AuthorizeSeller(server.GetAddresses)).Methods("GET")
 	r.HandleFunc("/roles", server.AuthorizeAdmin(server.GetRoles)).Methods("GET")
+	r.HandleFunc("/products-by-seller", server.GetProductsBySeller).Methods("GET") ///products-by-seller?seller_id=...
 
 	r.HandleFunc("/add-product", server.AuthorizeSeller(server.AddProduct)).Methods("POST")
 	r.HandleFunc("/add-products", server.AuthorizeSeller(server.AddProducts)).Methods("POST")
@@ -44,6 +45,7 @@ func main() {
 	r.HandleFunc("/delete-role/{id}", server.AuthorizeAdmin(server.DeleteRole)).Methods("DELETE")
 
 	r.HandleFunc("/update-product/{id}", server.AuthorizeSeller(server.UpdeteProduct)).Methods("PUT")
+	r.HandleFunc("/update-product-stock/{id}", server.UpdateProductStock).Methods("PUT")
 
 	r.HandleFunc("/sign-up", server.SignupHandler).Methods("POST")
 	r.HandleFunc("/login", server.LoginHandler).Methods("POST")

@@ -12,7 +12,7 @@ export default function cartReducer(state = initialState.cart, action) {
           if (cartItem.product.id === action.payload.product.id) {
             return Object.assign({}, addedItem, {
               quantity: addedItem.quantity + 1,
-            });
+            }); 
           }
           return cartItem;
         });
@@ -44,6 +44,8 @@ export default function cartReducer(state = initialState.cart, action) {
         );
         return newState2;
       }
+      case actionTypes.CLEAR_CART:
+        return[];
 
     default:
       return state;

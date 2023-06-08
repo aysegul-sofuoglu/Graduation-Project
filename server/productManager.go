@@ -66,6 +66,38 @@ func GetProductsById(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(products)
 }
 
+func GetProductsBySeller(w http.ResponseWriter, r *http.Request) {
+
+	seller := r.URL.Query().Get("seller_id")
+
+	if seller == "" {
+		http.Error(w, "seller_id parameter is required", http.StatusBadRequest)
+		return
+	}
+
+	productCollection := project.Collection("product")
+	var ctx, _ = context.WithTimeout(context.Background(), 10*time.Second)
+
+	cursor, err := productCollection.Find(ctx, bson.M{"seller": seller})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	var products []models.Product
+	if err = cursor.All(ctx, &products); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if len(products) == 0 {
+		http.Error(w, "No products found", http.StatusNotFound)
+		return
+	}
+
+	json.NewEncoder(w).Encode(products)
+}
+
 func GetProductsByCategoryId(w http.ResponseWriter, r *http.Request) {
 
 	categoryID := r.URL.Query().Get("category_id")
@@ -121,6 +153,7 @@ func AddProduct(w http.ResponseWriter, r *http.Request) {
 			{Key: "category", Value: product.Category},
 			{Key: "stock", Value: product.Stock},
 			{Key: "supplyCost", Value: product.SupplyCost},
+			{Key: "seller", Value: product.Seller},
 		})
 
 		json.NewEncoder(w).Encode(productResult)
@@ -178,6 +211,7 @@ func UpdeteProduct(w http.ResponseWriter, r *http.Request) {
 			"category":   product.Category,
 			"stock":      product.Stock,
 			"supplyCost": product.SupplyCost,
+			"seller":     product.Seller,
 		},
 	}
 
@@ -223,4 +257,50 @@ func AddProducts(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusCreated)
 	w.Write([]byte("Products added successfully"))
+}
+
+func UpdateProductStock(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	productCollection := project.Collection("product")
+
+	var product models.Product
+	if err := json.NewDecoder(r.Body).Decode(&product); err != nil {
+		http.Error(w, "Geçersiz ürün verisi", http.StatusBadRequest)
+		return
+	}
+
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		http.Error(w, "Geçersiz ürün ID'si", http.StatusBadRequest)
+		return
+	}
+
+	filter := bson.M{"_id": objID}
+
+	update := bson.M{
+		"$set": bson.M{
+			"stock": product.Stock,
+		},
+	}
+
+	result, err := productCollection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		http.Error(w, "Ürün güncelleme hatası", http.StatusInternalServerError)
+		return
+	}
+
+	response := map[string]interface{}{
+		"matchedCount":  result.MatchedCount,
+		"modifiedCount": result.ModifiedCount,
+		"upsertedCount": result.UpsertedCount,
+		"upsertedID":    result.UpsertedID,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }

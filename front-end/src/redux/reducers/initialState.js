@@ -3,7 +3,7 @@ const initialState={
     categories:[],
     products:[],
     cart:[],
-    savedProduct:{}
+    savedProduct:{},
 };
 
 export default initialState;

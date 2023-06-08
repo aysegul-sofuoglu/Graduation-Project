@@ -8,7 +8,7 @@ import alertify from "alertifyjs";
 import { Link } from "react-router-dom";
 
 class ProductList extends Component {
-  componentDidMount() {
+   componentDidMount() {
     this.props.actions.getProducts();
   }
 
@@ -18,6 +18,9 @@ class ProductList extends Component {
   };
 
   render() {
+
+    
+
     return (
       <div>
         <h3>
@@ -79,7 +82,7 @@ function mapStateToProps(state) {
     products: state.productListReducer,
   };
 }
-
+ 
 function mapDispatchToProps(dispatch) {
   return {
     actions: {

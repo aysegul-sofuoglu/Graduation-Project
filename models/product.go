@@ -10,4 +10,5 @@ type Product struct {
 	Category   primitive.ObjectID `bson:"category,omitempty" json:"category_id"`
 	Stock      int                `bson:"stock,omitempty" json:"stock"`
 	SupplyCost float64            `bson:"supplyCost,omitempty" json:"supply_cost"`
+	Seller     string             `bson:"seller,omitempty" json:"seller_id"`
 }

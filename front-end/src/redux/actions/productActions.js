@@ -17,6 +17,49 @@ export function deleteProductSuccess(product) {
   return { type: actionTypes.DELETE_PRODUCT_SUCCESS, payload: product };
 }
 
+
+// export function getProductsBySeller(seller_id){
+//   return async function(dispatch){
+//     let url = `http://localhost:8000/products-by-seller?seller_id=${seller_id}`
+
+//     try {
+//       const response =await fetch(url);
+//       const result = await response.json();
+//       dispatch(getProductsSuccess(result));
+
+//     }catch(error){
+//       throw error;
+//     }
+//   }
+// }
+
+export function updateProductStock(productID, stock) {
+  return async function (dispatch) {
+    try {
+      const response = await fetch(`http://localhost:8000/update-product-stock/${productID}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ stock }),
+      });
+      if (response.ok) {
+     
+        dispatch({
+          type: actionTypes.UPDATE_PRODUCT_STOCK,
+          payload: { productID, stock },
+        });
+      } else {
+   
+      }
+    } catch (error) {
+     
+    }
+  };
+}
+
+
+
 export async function deleteProductApi(productId) {
   const url = `http://localhost:8000/delete-product/${productId}`;
 
