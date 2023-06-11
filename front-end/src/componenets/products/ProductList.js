@@ -157,8 +157,7 @@ class ProductList extends Component {
 function mapStateToProps(state) {
   return {
     currentCategory: state.changeCategoryReducer,
-    products: state.productListReducer,
-    user: state.userReducer,
+    products: state.productListReducer
   };
 }
 
