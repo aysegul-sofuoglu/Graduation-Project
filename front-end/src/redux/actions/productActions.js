@@ -1,5 +1,6 @@
 import axios from "axios";
 import * as actionTypes from "./actionTypes";
+import jwt_decode from "jwt-decode";
 
 export function getProductsSuccess(products) {
   return { type: actionTypes.GET_PRODUCTS_SUCCESS, payload: products };
@@ -17,48 +18,59 @@ export function deleteProductSuccess(product) {
   return { type: actionTypes.DELETE_PRODUCT_SUCCESS, payload: product };
 }
 
+export function getProductsBySeller() {
+  return async function (dispatch) {
+    try {
+      const token = localStorage.getItem("token");
+      const user = decodeToken(token);
 
-// export function getProductsBySeller(seller_id){
-//   return async function(dispatch){
-//     let url = `http://localhost:8000/products-by-seller?seller_id=${seller_id}`
+      if (user && user.role === "seller") {
+        const sellerId = user.userId;
+        const url = `http://localhost:8000/products-by-seller?seller_id=${sellerId}`;
+        const response = await axios.get(url);
 
-//     try {
-//       const response =await fetch(url);
-//       const result = await response.json();
-//       dispatch(getProductsSuccess(result));
+        dispatch(getProductsSuccess(response.data));
+      } else {
+        console.error("User is not authorized to access seller products.");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+}
 
-//     }catch(error){
-//       throw error;
-//     }
-//   }
-// }
+function decodeToken(token) {
+  try {
+    return jwt_decode(token);
+  } catch (error) {
+    console.error("Failed to decode token:", error);
+    return null;
+  }
+}
 
 export function updateProductStock(productID, stock) {
   return async function (dispatch) {
     try {
-      const response = await fetch(`http://localhost:8000/update-product-stock/${productID}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ stock }),
-      });
+      const response = await fetch(
+        `http://localhost:8000/update-product-stock/${productID}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ stock }),
+        }
+      );
       if (response.ok) {
-     
         dispatch({
           type: actionTypes.UPDATE_PRODUCT_STOCK,
           payload: { productID, stock },
         });
       } else {
-   
       }
-    } catch (error) {
-     
-    }
+    } catch (error) {}
   };
 }
-
-
 
 export async function deleteProductApi(productId) {
   const url = `http://localhost:8000/delete-product/${productId}`;
@@ -109,6 +121,13 @@ export function getProducts(categoryId) {
 }
 
 export async function saveProductApi(product) {
+  const token = localStorage.getItem("token");
+  const user = decodeToken(token);
+
+  if (user && user.role === "seller") {
+    product.seller_id = user.userId;
+  }
+
   const url = product.id
     ? `http://localhost:8000/update-product/${product.id}`
     : "http://localhost:8000/add-product";

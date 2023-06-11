@@ -5,12 +5,13 @@ import productListReducer from "./productListReducer"
 import cartReducer from "./cartReducer"
 import saveProductReducer from "./saveProductReducer"
 
+
 const rootReducer=combineReducers({
     changeCategoryReducer,
     categoryListReducer,
     productListReducer,
     cartReducer,
-    saveProductReducer
+    saveProductReducer,
 })
 
 export default rootReducer;
